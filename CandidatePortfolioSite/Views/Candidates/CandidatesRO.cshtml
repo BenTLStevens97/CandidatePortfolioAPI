@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Candidates>
+
+@{
+    ViewData["Title"] = "Fetching Data from webAPI";
+}
+<head>
+
+
+</head>
+
+
+
+<table class="table">
+    <thead>
+
+        <tr>
+            <th>First Name</th>
+            <th>Surname</th>
+
+            <th>Email</th>
+
+            <th>Age</th>
+            <th>About Me</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+
+            <th>Profile Picture</th>
+          
+
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+            string imgPath = ("../../Files/" + @row.id + ".jpg");
+            string updateImgPath = (imgPath + "?r=" + DateTime.Now.Ticks.ToString());
+
+            <tr>
+
+
+                <td>@row.FirstName</td>
+                <td>@row.Surname</td>
+                <td>@row.Email</td>
+                <td>@row.Age</td>
+                <td>@row.AboutMe</td>
+                <td id="GeoLat">@row.gps_lat</td>
+                <td id="GeoLng">@row.gps_long</td>
+                <td><img src=@updateImgPath width="65" height="75" /></td>
+                <td>@Html.ActionLink("View Candidate", "SingleCandidateRO","SingleCandidate", new {  id=row.id})</td>
+               
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,240 @@
+﻿@model IEnumerable<selectCandidate>
+@using System;
+@using System.Xml;
+@using HtmlAgilityPack;
+@{
+    ViewData["Title"] = "Fetching Data from webAPI";
+}
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    .row {
+        margin-left: -5px;
+        margin-right: -5px;
+    }
+
+    .column {
+        float: left;
+        width: 50%;
+        padding: 5px;
+    }
+
+    /* Clearfix (clear floats) */
+    .row::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+
+    }
+
+    th, td {
+        text-align: left;
+        padding: 16px;
+       
+
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    
+</style>
+<head>
+
+
+</head>
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<h1>Hello, @HttpContextAccessor.HttpContext.Session.GetString("_Username")</h1>
+@{
+    string loggedInUser = HttpContextAccessor.HttpContext.Session.GetString("_Username");
+
+    if (loggedInUser == null)
+    {
+        Context.Response.Redirect("SingleCandidateRO");
+    }
+
+
+}
+
+
+
+<table class="table">
+    <thead>
+
+        <tr>
+            <th>First Name</th>
+            <th>Surname</th>
+
+            <th>Email</th>
+
+            <th>Age</th>
+            <th>About Me</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>GitHub Link</th>
+
+            
+           
+
+
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+            string imgPath = ("../../Files/" + @row.id + ".jpg");
+            string updateImgPath = (imgPath + "?r=" + DateTime.Now.Ticks.ToString());
+
+
+            <tr>
+
+
+                <td>@row.FirstName</td>
+                <td>@row.Surname</td>
+                <td>@row.Email</td>
+                <td>@row.Age</td>
+                <td>@row.AboutMe</td>
+                <td id="GeoLat">@row.gps_lat</td>
+                <td id="GeoLng">@row.gps_long</td>
+                <td>@row.GitHubLink</td>
+                <td><img src=@updateImgPath width="65" height="75" /></td>
+                <td>@Html.ActionLink("Generate Token", "GenerateToken", "SingleCandidate", new {  id=row.id, FirstName =row.FirstName, Surname=row.Surname, Age=row.Age, AboutMe=row.AboutMe, Email=row.Email, gps_long=row.gps_long, gps_lat=row.gps_lat, GitHubLink =row.GitHubLink})</td>
+                <td>@Html.ActionLink("Edit", "EditCandidates", "EditCandidate", new {  id=row.id, Surname=row.Surname, Age=row.Age, AboutMe=row.AboutMe, Email=row.Email, gps_long=row.gps_long, gps_lat=row.gps_lat, GitHubLink =row.GitHubLink, AccessToken = row.AccessToken})</td>
+
+                
+
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="column">
+        <table class="table2">
+            <thead>
+
+                <tr>
+                    <th>Repository Data</th>
+
+
+
+
+
+
+
+                </tr>
+            </thead>
+
+
+            @foreach (var row in Model)
+            {
+
+                var GitHubLink = @row.GitHubLink;
+
+                var html = GitHubLink;
+
+                string addressPtA = "https://github.com/";
+                string addressPtB = "?tab=repositories";
+                if (GitHubLink.Contains(addressPtA) && GitHubLink.Contains(addressPtB))
+                {
+                    HtmlWeb web = new HtmlWeb();
+
+                    var htmlDoc = web.Load(html);
+
+                    HtmlAgilityPack.HtmlDocument doc = web.Load(GitHubLink);
+
+                    var node = htmlDoc.DocumentNode.SelectSingleNode("//*[@id=\"user-repositories-list\"]/ul/li[2]/div[1]/div[1]/h3/a");
+
+
+
+                    foreach (var item in doc.DocumentNode.SelectNodes("//*[@id=\"user-repositories-list\"]/ul/li/div[1]/div[1]/h3/a"))
+                    {
+
+
+
+                        <tr>
+
+                            <td >@item.InnerText</td>
+                        </tr>
+                    }
+
+                }
+            }
+
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="column">
+        <table class="table2">
+            <thead>
+
+                <tr>
+                    <th>Repository Description</th>
+
+
+
+
+
+
+
+                </tr>
+            </thead>
+
+
+            @foreach (var row in Model)
+            {
+                var GitHubLink = @row.GitHubLink;
+
+                var html = GitHubLink;
+
+                string addressPtA = "https://github.com/";
+                string addressPtB = "?tab=repositories";
+
+                if (GitHubLink.Contains(addressPtA) && GitHubLink.Contains(addressPtB))
+                {
+
+                    HtmlWeb web = new HtmlWeb();
+
+                    var htmlDoc = web.Load(html);
+
+                    HtmlAgilityPack.HtmlDocument doc = web.Load(GitHubLink);
+
+                    var node = htmlDoc.DocumentNode.SelectSingleNode("//*[@id=\"user-repositories-list\"]/ul/li[2]/div[1]/div[1]/h3/a");
+
+
+                    foreach (var itemDesc in doc.DocumentNode.SelectNodes("//*[@id=\"user-repositories-list\"]/ul/li/div[1]/div[2]/p"))
+                    {
+                        <tr>
+
+                            <td text-overflow: ellipsis;
+                                overflow: hidden;
+                                white-space: nowrap;>
+                                @itemDesc.InnerText
+                            </td>
+                        </tr>
+                    }
+                }
+
+            }
+
+        </table>
+    </div>
+</div>

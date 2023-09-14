@@ -1,0 +1,16 @@
+﻿@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    string loggedInUser = HttpContextAccessor.HttpContext.Session.GetString("_Username");
+    string AdminUser = HttpContextAccessor.HttpContext.Session.GetString("_IsAdmin");
+    string JWT = HttpContextAccessor.HttpContext.Session.GetString("_JWT");
+
+
+    if (loggedInUser == null)
+    {
+        Context.Response.Redirect("http://localhost:13418/Login/Login");
+    }
+
+
+}

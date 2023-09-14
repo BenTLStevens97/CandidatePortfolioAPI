@@ -1,0 +1,205 @@
+﻿@model CandidatePortfolioSite.Models.Login
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+<head>
+<style>
+    
+    #mySidenav a {
+        position: absolute;
+        right: -60px;
+        transition: 0.3s;
+        padding: 15px;
+        width: 100px;
+        text-decoration: none;
+        font-size: 20px;
+            color: #4682B4;
+        border-radius: 0 5px 5px 0;
+        border-color: gold;
+    }
+
+        #mySidenav a:hover {
+            right: 0;
+        }
+
+    #login {
+        top: 20px;
+            border-color: #87CEEB;
+            background-color: #87CEEB;
+        }
+
+    #candidates {
+        top: 80px;
+            border-color: #87CEEB;
+            background-color: #87CEEB;
+    }
+
+    #signout {
+        top: 140px;
+            border-color: #87CEEB;
+            background-color: #87CEEB;
+    }
+
+        body {
+            background-color: #ADD8E6;
+        }
+
+        .container {
+            padding: 15px;
+            background-color: #F0F8FF;
+            border-radius: 15px;
+            margin: auto;
+            width: 30%;
+            
+           
+        }
+
+        .innerContainer {
+            padding: 15px;
+            background-color: #F0F8FF;
+            margin: auto;
+            width: 30%;
+        }
+
+        .iconImage {
+            padding: 5px;
+            background-color: #F0F8FF;
+          
+            margin: auto;
+            width: 50%;
+           
+        }
+
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            width: 85%;
+        }
+
+        input[type=text] {
+            border: 2px solid #4682B4;
+            border-radius: 4px;
+            
+           
+        }
+
+        input[type=password] {
+            border: 2px solid #4682B4;
+            border-radius: 4px;
+        }
+
+
+        .loader {
+              border: 16px solid #f3f3f3;
+              border-radius: 50%;
+              border-top: 16px solid #3498db;
+              width: 120px;
+              height: 120px;
+              -webkit-animation: spin 2s linear infinite; /* Safari */
+              animation: spin 2s linear infinite;
+            }
+
+            /* Safari */
+            @@-webkit-keyframes spin {
+              0% { -webkit-transform: rotate(0deg); }
+              100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @@keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+
+       
+    </style>
+</head>
+
+<body>
+   
+    <div id="mySidenav" class="sidenav">
+        <!-- <a href="#" id="login">Login</a>-->
+        <!-- <a href="#" id="candidates">Candidates</a>-->
+        <!-- <a href="#" id="signout">Sign Out</a>-->
+    </div>
+
+
+
+
+
+
+
+    <div class="container">
+
+        <div class="loader" hidden></div>
+        <form asp-action="Login">
+
+
+           
+                    <img src="../../Files/icon.png" class="center" style="width:150px;height:150px;">
+               
+
+            
+            <div class="innerContainer">
+
+                    <input asp-for="sendUsername" class="center" placeholder="Username Required" required />
+            </div>
+
+            <div class="innerContainer">
+                    <input asp-for="sendPassword" class="center" placeholder="Password Required" type="password" required />
+
+
+            </div>
+         
+            <div class="innerContainer">
+
+
+          
+                <input type="submit" value="Login" class="center" style="width:40%" onclick="myFunction()"/>
+
+            </div>
+               
+        </form>
+
+       
+
+        <div class="innerContainer" id="SigningInMessage" hidden>
+            <p class="center">Signing you in...</p>
+            <div class="loader"></div>
+        </div>
+
+        <div class="innerContainer">
+
+
+
+            <p class="center">@Html.ActionLink("Continue as Guest", "Candidates", "Candidates")</p>
+            <p class="center">@Html.ActionLink("Register an Account", "RegisterCandidate", "Register")</p>
+
+
+        </div>
+    </div>
+</body>
+<script>
+    function myFunction() {
+        
+        var x = document.getElementById("SigningInMessage");
+       
+
+
+        if (x.style.display = "none") {
+            x.style.display = "block";
+            
+        } else {
+            x.style.display = "none";
+           
+        }
+    }
+
+
+
+
+
+
+</script> 

@@ -1,0 +1,572 @@
+﻿@model IEnumerable<Candidates>
+
+@{
+    ViewData["Title"] = "Candidates";
+    Layout = null;
+}
+<style>
+
+    #mySidenav a {
+        position: absolute;
+        right: -60px;
+        transition: 0.3s;
+        padding: 15px;
+        width: 100px;
+        text-decoration: none;
+        font-size: 20px;
+        color: #4682B4;
+        border-radius: 0 5px 5px 0;
+        border-color: gold;
+    }
+
+        #mySidenav a:hover {
+            right: 0;
+        }
+
+    #signout {
+        top: 20px;
+        border-color: #87CEEB;
+        background-color: #F0F8FF;
+    }
+
+    #login {
+        top: 80px;
+        border-color: #87CEEB;
+        background-color: #F0F8FF;
+    }
+
+    #candidates {
+        top: 165px;
+        border-color: #87CEEB;
+        background-color: #F0F8FF;
+    }
+
+    
+
+    body {
+        background-color: #ADD8E6;
+    }
+
+    .container {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+    }
+    .titleContainer{
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+    }
+
+
+
+    .MapContainer {
+        padding: 50px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+        height: 600px;
+        display: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .innerContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 30%;
+    }
+
+    .iconImage {
+        padding: 5px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 80%;
+    }
+
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+
+    .MapCenter {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 98%;
+        height:100%;
+    }
+
+    .insert {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+
+    input[type=text] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+    input[type=password] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #ADD8E6;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+
+    .listPhrase{
+        display: block;
+    }
+    .mapPhrase{
+        display: none;
+    }
+
+    #myInput {
+  background-image: url('../../Files/search.png');
+  background-size: 20px 20px;
+  
+  background-position: 10px 10px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+</style>
+
+
+<head>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&keyAIzaSyBDJVe2bBKUwt_oT8NBB8_Bgq0yVkA5tGIlanguage=en&region=US">
+    </script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+
+</head>
+
+
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    string loggedInUser = HttpContextAccessor.HttpContext.Session.GetString("_Username");
+    string AdminUser = HttpContextAccessor.HttpContext.Session.GetString("_IsAdmin");
+    string JWT = HttpContextAccessor.HttpContext.Session.GetString("_JWT");
+    
+    
+
+
+    if (AdminUser == "Yes")
+    {
+        <h1>Welcome, @loggedInUser - Administrator</h1>
+    }
+
+    if (loggedInUser != "" || loggedInUser != null)
+    {
+        if (AdminUser == "No")
+        {
+            <h1>Welcome, @loggedInUser </h1>
+        }
+       
+    }
+    
+
+     
+}
+<div id="mySidenav" class="sidenav">
+    
+    @foreach (var row in Model)
+    {
+        
+        bool hasProfile = false;
+        
+
+        if (loggedInUser == row.Username)
+        {
+
+
+
+            string SessionProfile = "_ProfileSession"; 
+            HttpContextAccessor.HttpContext.Session.SetString(SessionProfile, "True");
+
+        }
+
+       }
+
+
+       @{
+
+      /*
+            string profileName = @row.Username;
+            string profileURL = "http://localhost:13418/Candidates/candidateProfile?Username=";
+            string profileFullUrl = profileURL + profileName;
+
+
+            
+            <a href=@profileFullUrl id="login">Profile</a>
+
+*/
+        
+            if (loggedInUser != null)
+            {
+
+
+            string profileURL = "http://localhost:13418/Insert/InsertCandidate?Username=";
+            string profileFullUrl = profileURL + loggedInUser;
+
+
+                if (AdminUser == "No")
+                {
+                    <a href="@Url.Action("SignOut", "Login")" id="signout">Sign Out</a>
+                    <a href=@profileFullUrl id="login">Profile</a>
+                    <a href="http://localhost:13418/Users/GetUsers" id="candidates">View Account</a>
+                   
+
+                }
+
+                if (AdminUser == "Yes")
+                {
+                    <a href="@Url.Action("SignOut", "Login")" id="signout">Sign Out</a>
+                    <a href=@profileFullUrl id="login">Profile</a>
+                <a href="http://localhost:13418/Users/GetUsers" id="candidates">View Users</a>
+
+            }
+
+        }
+
+
+
+        if (loggedInUser == "" || loggedInUser == null)
+        {
+            <a href="@Url.Action("SignOut", "Login")" id="signout">Login</a>
+        }
+
+    }  
+
+    <!-- <a href="#" id="candidates">Candidates</a>-->
+    <!-- <a href="#" id="signout">Sign Out</a>-->
+</div>
+<div class="container">
+ <div class="innerContainer">
+        <h1>All Candidates</h1>
+        <div id="listPhrase" >
+    <p>List View</p>
+    </div>
+
+<div id="mapPhrase" hidden>
+    <p>Map View</p>
+</div>
+<label id="viewCheck" class="switch">
+    <input type="checkbox" unchecked onchange="myFunction()">
+    <span class="slider round"></span>
+</label>
+    </div>
+    
+
+<div id="TableOutline" class="container">
+    
+    <div class="container">
+        
+        <div id="mySidenav" class="sidenav">
+            
+            <!-- <a href="#" id="candidates">Candidates</a>-->
+            <!-- <a href="#" id="signout">Sign Out</a>-->
+        </div>
+      
+    </div>
+
+    <input type="text" id="myInput" onkeyup="searchFunction()" placeholder="Search for the language or technology required" title="Type in a name">
+<table class="table" id="myTable">
+        
+    
+    <thead>
+            
+        <tr>
+
+                <!-- <th hidden>Username</th>
+            <th>First Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+
+             <th>Age</th>-->
+            <!--<th hidden>About Me</th>
+            <th hidden>Latitude</th>
+                <th hidden>Longitude</th>
+
+                <th>Profile Picture</th>-->
+                <!--<th>@Html.ActionLink("Create Profile", "InsertCandidate", "Insert")</th>-->
+
+
+
+
+            </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Model)
+        {
+              
+            if(@row.FirstName != null){
+            string imgPath = ("../../Files/" + @row.id + ".jpg");
+            string updateImgPath = (imgPath + "?r=" + DateTime.Now.Ticks.ToString());
+                    string viewImgPath = ("../../Files/view.png");
+
+            <tr>
+                
+                <td hidden>@row.Username</td>
+                    <td style="width:5%">@row.FirstName</td>
+                    <td style ="width:5%">@row.Surname</td>
+                    <td style ="width:10%">@row.Specialty</td>
+                    <!--<td>@row.Email</td>-->
+                    <td style="width:3%">@row.Age</td>
+               <!--<td hidden>@row.AboutMe</td>
+                <td hidden id="GeoLat">@row.gps_lat</td>
+                     <td hidden id="GeoLng">@row.gps_long</td>-->
+                    <td style="width:15%"><img src=@updateImgPath width="65" height="75" /></td>
+                     
+                    <td style="width:5%"><a href="@Url.Action("candidateProfile","Candidates", new {  Username = @row.Username })">
+                                <img src="@viewImgPath" style="vertical-align: middle; width: 90px;">
+                    </a>   
+               
+               
+                
+
+            </tr>
+                }
+            }
+    </tbody>
+</table>
+
+</div>
+
+<script>
+    function myFunction() {
+        var y = document.getElementById("MapView");
+        var x = document.getElementById("TableOutline");
+        var a = document.getElementById("mapPhrase");
+        var b = document.getElementById("listPhrase");
+
+
+        if (x.style.display === "none") {
+            x.style.display = "block";
+            y.style.display = "none";
+            a.style.display = "none";
+            b.style.display = "block";
+        } else {
+            x.style.display = "none";
+            y.style.display = "block";
+            a.style.display = "block";
+            b.style.display = "none";
+        }
+    }
+
+
+
+
+   
+   
+</script>
+
+<div id="MapView" class="MapContainer">
+    <div id="modal-map2" class ="MapCenter" style="height: 100%;  overflow: hidden;"></div>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+
+
+
+    var uluru = { lat: 54.31402813366735, lng: -4.553744966746777 };
+    var map = new google.maps.Map(document.getElementById('modal-map2'), {
+        zoom: 6,
+        center: uluru,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        zoomControl: true,
+
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+        },
+
+        streetViewControl: true,
+
+
+        streetViewControlOptions: {
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+        },
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_CENTER
+        },
+
+
+    });
+
+    $(document).ready(function () {
+        $.getJSON('@Url.Action("MapCoords", "Map")', function (Map) {
+            $.each(Map, function (i) {
+                var LatNLong = new google.maps.LatLng(Map[i].gps_lat, Map[i].gps_long);
+                const icon = {
+                        url: "../../Files/icon.png", // url
+                    scaledSize: new google.maps.Size(25, 25), // scaled size
+                    origin: new google.maps.Point(0, 0), // origin
+                    anchor: new google.maps.Point(0, 0) // anchor
+                };
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: LatNLong,
+                    title: Map[i].firstName,
+                    icon: icon,
+                });
+
+
+                    var infowindow = new google.maps.InfoWindow({
+                        content: Map[i].firstName + " " + Map[i].surname + " " +
+                            "<p><a href='http://localhost:13418/Candidates/candidateProfile?Username=" + Map[i].username + "'>Profile</a></p>"
+                               
+                    });
+
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infowindow.open(map, marker);
+                    });
+
+                marker.setMap(map)
+            });
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+</div>
+</div>
+
+<script>
+function searchFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[3];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>

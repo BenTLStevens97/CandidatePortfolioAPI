@@ -1,0 +1,487 @@
+﻿@model CandidatePortfolioSite.Models.Candidates
+
+
+@{
+    ViewData["Title"] = "InsertCandidate";
+    Layout = null;
+
+
+}
+<style>
+
+    #mySidenav a {
+        position: absolute;
+        right: -60px;
+        transition: 0.3s;
+        padding: 15px;
+        width: 100px;
+        text-decoration: none;
+        font-size: 20px;
+        color: #4682B4;
+        border-radius: 0 5px 5px 0;
+        border-color: gold;
+    }
+
+        #mySidenav a:hover {
+            right: 0;
+        }
+
+    #login {
+        top: 20px;
+        border-color: #87CEEB;
+        background-color: #F0F8FF;
+    }
+
+    #candidates {
+        top: 80px;
+        border-color: #87CEEB;
+        background-color: #87CEEB;
+    }
+
+    #signout {
+        top: 140px;
+        border-color: #87CEEB;
+        background-color: #87CEEB;
+    }
+
+    body {
+        background-color: #ADD8E6;
+    }
+
+    .container {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+      
+    }
+
+    .uploadContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 30%;
+        float: left;
+    }
+
+    .titleContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+    }
+
+
+
+    .MapContainer {
+        padding: 50px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+        height: 600px;
+        display: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .innerContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 30%;
+    }
+
+    .innerContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 70%;
+    }
+
+    .iconImage {
+        padding: 5px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 80%;
+    }
+
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+
+    .Largercenter {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+
+    .MapCenter {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 98%;
+        height: 100%;
+    }
+
+    .insert {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+
+    input[type=text] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+    input[type=password] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #ADD8E6;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+
+    .listPhrase {
+        display: block;
+    }
+
+    .mapPhrase {
+        display: none;
+    }
+</style>
+
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    string loggedInUser = HttpContextAccessor.HttpContext.Session.GetString("_Username");
+    string AdminUser = HttpContextAccessor.HttpContext.Session.GetString("_IsAdmin");
+    string JWT = HttpContextAccessor.HttpContext.Session.GetString("_JWT");
+
+
+    if (loggedInUser == null)
+    {
+        Context.Response.Redirect("http://localhost:13418/Login/Login");
+    }
+
+
+}
+
+<div class="container">
+    
+    <div class="center">
+        <h1>Edit Profile</h1>
+
+        <h4>Profile Information</h4>
+        <hr />
+        <form asp-action="EditCandidates">
+
+            <div class="innerContainer">
+                <label asp-for="Username" class="center">Re-Enter this user's Username</label>
+                <input asp-for="Username" class="center" required />
+
+            </div>
+
+            <div class="innerContainer">
+                <label asp-for="FirstName" class="center">First Name</label>
+                <input asp-for="FirstName" class="center" required />
+
+            </div>
+            <div class="innerContainer">
+                <label asp-for="Surname" class="center">Surname</label>
+                <input asp-for="Surname" class="center" required />
+
+
+
+            </div>
+
+
+            <div class="innerContainer">
+                <label asp-for="Age" class="center">Age</label>
+                <input asp-for="Age" class="center" required />
+
+
+
+
+            </div>
+
+            <div class="innerContainer">
+                <label asp-for="Email" class="center">Email</label>
+                <input asp-for="Email" class="center" required />
+
+
+
+
+            </div>
+
+
+            <div class="innerContainer">
+                <label asp-for="CurrentJob" class="center">Candidate's Current Job/Role</label>
+                <input asp-for="CurrentJob" class="center" required />
+
+
+
+
+            </div>
+
+            <div class="innerContainer">
+                <label asp-for="CurrentEmployer" class="center">Candidate's Current Employer</label>
+                <input asp-for="CurrentEmployer" class="center" required />
+
+
+
+
+            </div>
+
+
+
+
+
+            <div class="LargerinnerContainer">
+                <label asp-for="Specialty" class="Largercenter">Enter the language or technology you specialise in (For example, C# & .NET, PHP, Python, Content Management Sytems etc...)</label>
+                <input asp-for="Specialty" class="Largercenter" required />
+
+
+
+
+
+            </div>
+
+            <div class="LargerinnerContainer">
+                <label asp-for="AboutMe" class="center">Tell us about yourself</label>
+                <input asp-for="AboutMe" class="center" required />
+
+
+
+
+            </div>
+
+
+
+            <div class="innerContainer">
+
+                <p class="center">Click the button to get your coordinates.</p>
+
+                <button class="center" onclick="getLocation()">Get Location</button>
+
+            </div>
+
+
+            <div class="innerContainer">
+
+                <label asp-for="gps_lat" class="center">Latitude Location Coordinates</label>
+                <input id="gpsLat" asp-for="gps_lat" class="center" required />
+
+
+
+            </div>
+
+            <div class="innerContainer">
+                <label asp-for="gps_long" class="center">Longitude Location Coordinates</label>
+                <input id="gpsLong" asp-for="gps_long" class="center" required />
+
+
+
+
+            </div>
+
+            <div class="innerContainer">
+
+            
+                
+           
+           
+
+            <script>
+                const x = document.querySelector("#gpsLat")
+                const y = document.querySelector("#gpsLong")
+
+                function getLocation() {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(showPosition);
+                    } else {
+                        x.value = "Geolocation is not supported by this browser.";
+                    }
+                }
+
+                function showPosition(position) {
+                    x.value = position.coords.latitude;
+                    y.value = position.coords.longitude;
+                }
+            </script>
+
+            </div>
+
+
+           
+
+            <div class="innerContainer">
+                <label asp-for="GitHubLink" class="center">Share your GitHub Repo Library by sharing a link</label>
+                <input asp-for="GitHubLink" class="center" required />
+
+
+
+
+            </div>
+
+           
+
+
+
+
+
+
+
+            <div class="innerContainer">
+                <input type="submit" value="Edit Candidate" class="center" />
+
+            </div>
+
+        </form>
+   
+
+
+@{
+    ViewData["Title"] = "Single File Upload";
+
+}
+<hr />
+
+<h4>Change Profile Picture</h4>
+<hr />
+
+<form asp-action="Upload" asp-controller="Upload" method="post" enctype="multipart/form-data">
+
+
+
+
+
+    <div hidden class="row mt-2">
+        
+            <label class="col-form-label">Enter File Name For Save</label>
+            <label asp-for="FileName" class"control-label"></label>
+            <input asp-for="FileName" class="form-control" />
+            <span asp-validation-for="FileName" class="text-danger"></span>
+        
+    </div>
+
+    <div hidden class="row mt-2">
+        
+            <label class="col-form-label">Enter File Name For Save</label>
+            <label asp-for="id" class"control-label"></label>
+            <input asp-for="id" class="form-control" />
+            <span asp-validation-for="FileName" class="text-danger"></span>
+      
+    </div>
+
+
+
+    <div class="innerContainer">
+       
+            <label class="center">Select File</label>
+            <input asp-for="File" class="center" />
+            <span asp-validation-for="File" class="center"></span>
+        
+    </div>
+
+
+    <div class="innerContainer">
+        
+            <button type="submit" class="center">Upload File</button>
+       
+    </div>
+</form>
+
+
+
+<div>
+
+    @Html.ActionLink("Back to Candidates List", "Candidates", "Candidates")
+</div>
+</div>
+</div>

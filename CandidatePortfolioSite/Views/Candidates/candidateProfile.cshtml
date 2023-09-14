@@ -1,0 +1,882 @@
+﻿@model IEnumerable<Candidates>
+
+@{
+    ViewData["Title"] = "Candidates";
+    Layout = null;
+}
+@using System;
+@using System.Xml;
+@using HtmlAgilityPack;
+<style>
+
+    #mySidenav a {
+        position: absolute;
+        right: -60px;
+        transition: 0.3s;
+        padding: 15px;
+        width: 100px;
+        text-decoration: none;
+        font-size: 20px;
+        color: #4682B4;
+        border-radius: 0 5px 5px 0;
+        border-color: gold;
+    }
+
+        #mySidenav a:hover {
+            right: 0;
+        }
+
+    #login {
+        top: 20px;
+        border-color: #87CEEB;
+        background-color: #F0F8FF;
+    }
+
+    #candidates {
+        top: 80px;
+        border-color: #87CEEB;
+        background-color: #87CEEB;
+    }
+
+    #signout {
+        top: 140px;
+        border-color: #87CEEB;
+        background-color: #87CEEB;
+    }
+
+    body {
+        background-color: #ADD8E6;
+    }
+
+    .container {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+    }
+
+    .titleContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+    }
+
+
+
+    .MapContainer {
+        padding: 50px;
+        background-color: #F0F8FF;
+        border-radius: 15px;
+        margin: auto;
+        width: 80%;
+        height: 600px;
+        display: none;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .innerContainer {
+        padding: 15px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 30%;
+    }
+
+    .iconImage {
+        padding: 5px;
+        background-color: #F0F8FF;
+        margin: auto;
+        width: 80%;
+    }
+
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+    }
+
+    .MapCenter {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 98%;
+        height: 100%;
+    }
+
+    .insert {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+    }
+
+    input[type=text] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+    input[type=password] {
+        border: 2px solid #4682B4;
+        border-radius: 4px;
+    }
+
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+        background-color: #ADD8E6;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+
+    .listPhrase {
+        display: block;
+    }
+
+    .mapPhrase {
+        display: none;
+    }
+
+    .ppColumn {
+        float: left;
+        width: 10%;
+        height: 320px;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .bioColumn {
+        float: left;
+        width: 80%;
+        height: 320px;
+        padding:5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .skillsColumn {
+        float: left;
+        width: 30%;
+        height: 300px;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .jobsColumn {
+        float: left;
+        width: 50%;
+        height: 300px;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+       
+    }
+
+    .educationColumn {
+        float: left;
+        width: 90%;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        
+    }
+
+    .column {
+        float: left;
+        width: 45%;
+        padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+</style>
+
+
+<head>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places&keyAIzaSyBDJVe2bBKUwt_oT8NBB8_Bgq0yVkA5tGIlanguage=en&region=US">
+    </script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+
+</head>
+
+
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    string loggedInUser = HttpContextAccessor.HttpContext.Session.GetString("_Username");
+    string AdminUser = HttpContextAccessor.HttpContext.Session.GetString("_IsAdmin");
+    string JWT = HttpContextAccessor.HttpContext.Session.GetString("_JWT");
+   
+    string EditImgPath = ("../../Files/edit.png"); 
+    string DelImgPath = ("../../Files/delete.png"); 
+    string AddImgPath = ("../../Files/add.png");
+
+
+
+    if (AdminUser == "Yes")
+    {
+        <h1>Welcome, @loggedInUser - Administrator</h1>
+    }
+
+    if (loggedInUser != "" || loggedInUser != null)
+    {
+        if (AdminUser == "No")
+        {
+            <h1>Welcome, @loggedInUser </h1>
+        }
+
+    }
+
+
+
+}
+<div id="mySidenav" class="sidenav">
+
+    <a href="http://localhost:13418/Candidates/Candidates" id="login">Candidates</a>
+    <!-- <a href="#" id="signout">Sign Out</a>-->
+</div>
+<div id="listPhrase">
+    
+</div>
+
+<div id="mapPhrase" hidden>
+    
+</div>
+
+
+<div id="TableOutline" class="container">
+   
+    <div class="container">
+
+        <div id="mySidenav" class="sidenav">
+            
+            <!-- <a href="#" id="candidates">Candidates</a>-->
+            <!-- <a href="#" id="signout">Sign Out</a>-->
+        </div>
+
+    </div>
+
+
+    <div class="ppColumn">
+        <div class="center">
+    @foreach (var row in Model)
+            {
+            
+
+
+                if (@row.FirstName != null)
+                {
+                string imgPath = ("../../Files/" + @row.id + ".jpg");
+                string updateImgPath = (imgPath + "?r=" + DateTime.Now.Ticks.ToString());
+            
+            <p><img src=@updateImgPath width="300" height="300" /></p>
+            
+           
+        }
+            }
+        </div>
+    </div>
+    <div class="bioColumn">
+        <div class="center">
+        @foreach (var row in Model)
+        {
+                HttpContextAccessor.HttpContext.Session.SetString("_UserProfile", row.Username);
+               
+
+
+            if (@row.FirstName != null)
+            {
+
+                    if(loggedInUser != null)
+                    {
+                         
+                        if(loggedInUser == row.Username)
+                        {
+                            if(AdminUser != "Yes")
+                            {
+
+                               
+                                <a href="@Url.Action("EditCandidateView", "EditCandidate", new {  id=row.id, Username=row.Username, FirstName=row.FirstName, Surname=row.Surname, Age=row.Age, AboutMe=row.AboutMe, Email=row.Email, gps_long=row.gps_long, gps_lat=row.gps_lat, GitHubLink =row.GitHubLink, Specialty=row.Specialty, CurrentJob=row.CurrentJob, CurrentEmployer=row.CurrentEmployer})">
+                                <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                </a>
+                            }
+
+                        }
+
+
+                        if(AdminUser == "Yes")
+                        {
+                            <a href="@Url.Action("EditCandidateView", "EditCandidate", new {  id=row.id, Username=row.Username, FirstName=row.FirstName, Surname=row.Surname, Age=row.Age, AboutMe=row.AboutMe, Email=row.Email, gps_long=row.gps_long, gps_lat=row.gps_lat, GitHubLink =row.GitHubLink, Specialty=row.Specialty, CurrentJob=row.CurrentJob, CurrentEmployer=row.CurrentEmployer})">
+                                <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                </a>
+                        }
+                        
+                        
+                    }
+
+               
+                
+                
+                
+                
+                <p>Name: @row.FirstName @row.Surname</p>
+                <p>Age: @row.Age</p>
+                <p>About Me: @row.AboutMe</p>
+                <p>Specialises In: @row.Specialty</p>
+                <p>Email: @row.Email</p>
+                <p>Current Job: @row.CurrentJob at @row.CurrentEmployer</p>
+                
+               
+            }
+        }
+
+        </div>
+    </div>
+
+    <div class="column">
+       
+            <table class="table">
+            <thead>
+
+                <tr>
+                    <th>Skills and Technologies</th>
+
+                    @{
+
+                        string userProfile = HttpContextAccessor.HttpContext.Session.GetString("_UserProfile");
+                        if (loggedInUser == userProfile)
+                        {
+                            if (AdminUser != "Yes")
+                            {
+                                <th>
+                                    <a href="@Url.Action("InsertSkill", "Insert", new{Username=@userProfile})">
+                                                             <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></th>
+                            }
+
+                           
+                        }
+                        
+                        if (AdminUser == "Yes")
+                            {
+
+                            <th>
+                                <a href="@Url.Action("InsertSkill", "Insert", new{Username=@userProfile})">
+                                                             <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></th>
+                            }
+                    }
+                    
+
+
+
+
+
+
+                </tr>
+            </thead>
+        @foreach (var row in Model)
+        {
+
+
+
+            if (@row.SkillName != null)
+            {
+
+               <tr>
+
+                
+                <td>@row.SkillName</td>
+
+                        @{
+                            if(loggedInUser != null)
+                            {
+                                
+                           
+                                if (loggedInUser == row.Username)
+                                {
+                                    if (AdminUser != "Yes")
+                                    {
+                                        
+
+                                       <td><a href="@Url.Action("EditSkillView", "EditSkill", new {  id=row.id, Username=row.Username, SkillName=row.SkillName})">
+                                         <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+
+
+
+                                        
+                                        <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                         <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                    }
+
+
+                                }
+
+
+                                if(AdminUser == "Yes")
+                                {
+                                                            <td><a href="@Url.Action("EditSkillView", "EditSkill", new {  id=row.id, Username=row.Username, SkillName=row.SkillName})">
+                                                             <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></td>
+                                        <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                         <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+
+                                }
+                            }
+                              
+
+                        }
+
+
+               
+                
+                </tr>
+            }
+        }
+            </table>
+       
+    </div>
+
+
+    <div class="column">
+       
+            
+            <table class="table">
+            <thead>
+
+                <tr>
+                    <th>Employment History</th>
+
+
+                    @{
+
+                        
+                        if (loggedInUser == userProfile)
+                        {
+                            if (AdminUser != "Yes")
+                            {
+                                <th>
+                                    <a href="@Url.Action("InsertJob", "Insert", new{Username=@userProfile})">
+                                                             <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></th>
+
+                                
+                            }
+
+
+                        }
+
+                        if (AdminUser == "Yes")
+                        {
+
+                            <th>
+                                <a href="@Url.Action("InsertJob", "Insert", new{Username=@userProfile})">
+                                            <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                                    </a></th>
+                        }
+                    }
+                   
+
+
+
+
+
+
+                </tr>
+            </thead>
+            @foreach (var row in Model)
+            {
+
+
+
+                if (@row.JobTitle != null)
+                {
+                    <tr>
+
+
+                    <td> Worked at @row.CompanyName as a @row.JobTitle</td>
+
+                        @{
+                            if (loggedInUser != null)
+                            {
+
+
+                                if (loggedInUser == row.Username)
+                                {
+                                    if (AdminUser != "Yes")
+                                    {
+                                        
+
+
+                                        <td><a href="@Url.Action("EditJobView", "EditJob", new {  id=row.id, Username=row.Username, JobTitle=row.JobTitle, CompanyName=row.CompanyName})">
+                                         <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                        <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                         <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                    }
+
+
+                                }
+
+
+                                if (AdminUser == "Yes")
+                                {
+                                     <td><a href="@Url.Action("EditJobView", "EditJob", new {  id=row.id, Username=row.Username, JobTitle=row.JobTitle, CompanyName=row.CompanyName})">
+                                         <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                    <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                         <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+
+                                }
+                            }
+
+
+                        }
+
+                        
+                     </tr>
+                }
+            }
+            </table>
+       
+    </div>
+
+
+    <div class="educationColumn">
+
+
+        <table class="table">
+            <thead>
+
+                <tr>
+                    <th>Education</th>
+
+
+                    @{
+
+
+                        if (loggedInUser == userProfile)
+                        {
+                            if (AdminUser != "Yes")
+                            {
+                                <th>
+                                    <a href="@Url.Action("InsertEducation", "Insert", new{Username=@userProfile})">
+                                                             <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></th>
+                            }
+
+
+                        }
+
+                        if (AdminUser == "Yes")
+                        {
+
+                            <th><a href="@Url.Action("InsertEducation", "Insert", new{Username=@userProfile})">
+                                                             <img src="@AddImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></th>
+                        }
+                    }
+
+                    
+
+
+
+
+
+
+
+                </tr>
+            </thead>
+            @foreach (var row in Model)
+            {
+
+
+
+                if (@row.InstitutionName != null)
+                {
+                    <tr>
+
+
+                        <td> Studied @row.CourseName at @row.InstitutionName for @row.StudyType</td>
+
+
+
+                        @{
+                            if (loggedInUser != null)
+                            {
+
+
+                                if (loggedInUser == row.Username)
+                                {
+                                    if (AdminUser != "Yes")
+                                    {
+
+
+                                        <td>
+                                            <a href="@Url.Action("EditEducationView", "EditEducation", new {  id=row.id, Username=row.Username, InstitutionName=row.InstitutionName, CourseName=row.CourseName, StudyType=row.StudyType})">
+                                         <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                        <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                         <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                        </a></td>
+                                    }
+
+
+                                }
+
+
+                                if (AdminUser == "Yes")
+                                {
+                                    <td>
+                                        <a href="@Url.Action("EditEducationView", "EditEducation", new {  id=row.id, Username=row.Username, InstitutionName=row.InstitutionName, CourseName=row.CourseName, StudyType=row.StudyType})">
+                                                             <img src="@EditImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></td>
+                                                        <td><a href="@Url.Action("DeleteCandidate","Delete", new {  id=row.id})">
+                                                             <img src="@DelImgPath" style="vertical-align: right; width: 20px;">
+                                                            </a></td>
+
+                                }
+                            }
+
+
+                        }
+
+
+
+
+
+                       
+                    </tr>
+                }
+            }
+        </table>
+
+    </div>
+
+    <div class="row">
+        <div class="column">
+           
+            <table class="table">
+                <thead>
+
+                    <tr>
+                        <th>GitHub Projects</th>
+
+
+
+
+
+
+
+                    </tr>
+                </thead>
+
+
+                @foreach (var row in Model)
+                {
+                    if (@row.GitHubLink != null)
+                    {
+
+
+
+                        var GitHubLink = @row.GitHubLink;
+
+                        var html = GitHubLink;
+
+                        string addressPtA = "https://github.com/";
+                        string addressPtB = "?tab=repositories";
+                        if (GitHubLink.Contains(addressPtA) && GitHubLink.Contains(addressPtB))
+                        {
+                            HtmlWeb web = new HtmlWeb();
+
+                            var htmlDoc = web.Load(html);
+
+                            HtmlAgilityPack.HtmlDocument doc = web.Load(GitHubLink);
+
+                            var node = htmlDoc.DocumentNode.SelectSingleNode("//*[@id=\"user-repositories-list\"]/ul/li[2]/div[1]/div[1]/h3/a");
+
+
+
+                            foreach (var item in doc.DocumentNode.SelectNodes("//*[@id=\"user-repositories-list\"]/ul/li/div[1]/div[1]/h3/a"))
+                            {
+
+
+
+                                <tr>
+
+                                    <td>@item.InnerText</td>
+                                </tr>
+                            }
+
+                        }
+                    }
+                }
+
+
+                </tbody>
+            </table>
+           
+        </div>
+
+        <div class="column">
+            
+            <table class="table">
+                <thead>
+
+                    <tr>
+                        <th>Project Description</th>
+
+
+
+
+
+
+
+                    </tr>
+                </thead>
+
+
+                @foreach (var row in Model)
+                {
+                    if (@row.GitHubLink != null)
+                    {
+
+
+
+                        var GitHubLink = @row.GitHubLink;
+
+                        var html = GitHubLink;
+
+                        string addressPtA = "https://github.com/";
+                        string addressPtB = "?tab=repositories";
+
+                        if (GitHubLink.Contains(addressPtA) && GitHubLink.Contains(addressPtB))
+                        {
+
+                            HtmlWeb web = new HtmlWeb();
+
+                            var htmlDoc = web.Load(html);
+
+                            HtmlAgilityPack.HtmlDocument doc = web.Load(GitHubLink);
+
+                            var node = htmlDoc.DocumentNode.SelectSingleNode("//*[@id=\"user-repositories-list\"]/ul/li[2]/div[1]/div[1]/h3/a");
+
+
+                            foreach (var itemDesc in doc.DocumentNode.SelectNodes("//*[@id=\"user-repositories-list\"]/ul/li/div[1]/div[2]/p"))
+                            {
+                                <tr>
+
+                                    <td text-overflow: ellipsis;
+                                    overflow: hidden;
+                                    white-space: nowrap;>
+                                        @itemDesc.InnerText
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                }
+
+            </table>
+        
+    </div>
+
+    <table class="table">
+
+
+        
+    </table>
+    </div>
+</div>
+
+
+
+
+
+
+</div>

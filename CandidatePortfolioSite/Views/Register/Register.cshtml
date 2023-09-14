@@ -1,0 +1,60 @@
+﻿@model CandidatePortfolioSite.Models.Login
+
+
+@{
+    ViewData["Title"] = "Register";
+
+
+
+}
+
+<h1>Create Profile</h1>
+
+<h4>Profile Information</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RegisterCandidate">
+
+
+            <div class="form-group">
+                <label asp-for="Username" class"control-label"></label>
+                <input asp-for="Username" class="form-control" placeholder="Game Name Required Here" required />
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class"control-label"></label>
+                <input asp-for="Password" class="form-control" placeholder="Game Description Required Here" required />
+
+
+
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="IsAdmin" class"control-label"></label>
+                <input asp-for="IsAdmin" class="form-control" placeholder="Link to Image Required Here" required />
+
+
+
+
+            </div>
+
+           
+
+
+
+
+
+
+            <div class="form-group">
+                <input type="submit" value="Register Account" class="btn btn-primary" />
+
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+
